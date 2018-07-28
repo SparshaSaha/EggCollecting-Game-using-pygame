@@ -52,31 +52,40 @@ class EggGame(object):
 
             keys = pygame.key.get_pressed()
 
+            # Move player right
             if keys[pygame.K_RIGHT]:
                 player.controlPlayer(self.movementSpeed, 850)
 
+            # Move player left
             if keys[pygame.K_LEFT]:
                 player.controlPlayer(self.movementSpeed * -1, 850)
 
+            # Draw game background
             self.drawBackground(screen)
 
+            # Generate obstacles if no obstacles are present on screen
             if self.lastObstacle == None:
                 self.generateObstacles()
             else:
                 self.lastObstacle.propagate(self.obstacleSpeed)
+
+                # If player collides with egg increment score
                 if player.checkCollision(self.lastObstacle):
                     self.score += 1
                     self.destroyObstacle()
+
+                # If obstacle hits ground, decrement life
                 elif self.lastObstacle.checkOutOfBoundary(self.dimensions[1]):
                     self.lives -= 1
                     self.destroyObstacle()
                 else:
                     self.lastObstacle.drawCharacter(screen)
             
-            # Exit Game
+            # Exit Game if lives = 0
             if self.lives == 0:
                 self.running = False;
 
+            # Draw character on screen
             player.drawCharacter(screen)
             self.drawText(screen, "Score: " + str(self.score), 20, 700, 100)
             self.drawText(screen, "Lives: " + str(self.lives), 20, 100, 100)
