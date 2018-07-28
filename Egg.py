@@ -4,7 +4,7 @@ class Egg(object):
         self.x = x
         self.y = y
         self.hitbox = (self.x, self.y, 20, 20)
-        self.image = pygame.image.load("egg.png")
+        self.image = pygame.image.load("GameImages/egg.png")
 
     def drawCharacter(self, canvas):
         self.hitbox = (self.x, self.y, 20, 20)

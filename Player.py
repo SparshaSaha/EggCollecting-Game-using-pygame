@@ -5,7 +5,7 @@ class Player(object):
         self.x = x
         self.y = y
         self.hitbox = (self.x, self.y, 38, 40)
-        self.image = pygame.image.load("bucketsmall.png")
+        self.image = pygame.image.load("GameImages/bucketsmall.png")
 
     def drawCharacter(self, canvas):
         self.hitbox = (self.x, self.y, 38, 40)

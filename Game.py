@@ -16,13 +16,13 @@ class EggGame(object):
         self.running = True
         self.lives = 3
         self.fontName = pygame.font.match_font('arial')
-        self.loadedImages = [pygame.image.load("background.jpg")]
+        self.loadedImages = [pygame.image.load("GameImages/background.jpg")]
         self.clock = pygame.time.Clock()
 
 
     def drawBackground(self, screen):
     	screen.blit(self.loadedImages[0], (0, 0))
-        
+
     def generateObstacles(self):
     	self.lastObstacle = Egg(random.randint(25, 875), 25)
 
