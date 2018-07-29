@@ -22,6 +22,7 @@ class EggGame(object):
         self.loadedImages = [pygame.image.load("GameImages/background.jpg")]
         self.players = [Player(430, 550) for i in range(0, 500)]
         self.clock = pygame.time.Clock()
+        self.stopgen = False
 
 
     def drawBackground(self, screen):
@@ -66,39 +67,43 @@ class EggGame(object):
         newPlayers = []
         self.players.sort(key=lambda x: x.score, reverse = True)
 
-        with open('inputWts', 'wb') as fp:
-            pickle.dump(self.players[0].inputWeights.tolist(), fp)
+        if len(self.players) < 5:
+            with open('inputWeights', 'wb') as fp:
+                pickle.dump(self.players[0].inputWeights.tolist(), fp)
 
-        with open('outputWts', 'wb') as fp:
-            pickle.dump(self.players[0].outputWeights.tolist(), fp)
+            with open('outputWeights', 'wb') as fp:
+                pickle.dump(self.players[0].outputWeights.tolist(), fp)
+            self.stopgen = True
+            
+            
 
 
-        # Keep 2 top scorers as it is
+        # Keep 1 top scorer as it is
         self.players[0].x = 430
-        self.players[1].x = 430
+        #self.players[1].x = 430
         self.players[0].score = 0
-        self.players[1].score = 0
+        #self.players[1].score = 0
         newPlayers.append(self.players[0])
-        newPlayers.append(self.players[1])
+        #newPlayers.append(self.players[1])
+        if not self.stopgen:
+            bestTwo = Player(430, 550)
+            bestTwo.crossOver(self.players[0], self.players[1])
+            newPlayers.append(bestTwo)
 
-        bestTwo = Player(430, 550)
-        bestTwo.crossOver(self.players[0], self.players[1])
-        newPlayers.append(bestTwo)
+            bestAndWorst = Player(430, 550)
+            bestAndWorst.crossOver(self.players[0], self.players[len(self.players) - 1])
+            newPlayers.append(bestAndWorst)
 
-        bestAndWorst = Player(430, 550)
-        bestAndWorst.crossOver(self.players[0], self.players[len(self.players) - 1])
-        newPlayers.append(bestAndWorst)
+            for i in range(0, len(self.players) - 53):
+                par1 = self.players[random.randint(0, len(self.players)-1)]
+                par2 = self.players[random.randint(0, len(self.players)-1)]
 
-        for i in range(0, len(self.players) - 14):
-            par1 = self.players[random.randint(0, len(self.players)-1)]
-            par2 = self.players[random.randint(0, len(self.players)-1)]
-
-            child = Player(430, 550)
-            child.crossOver(par1, par2)
-            newPlayers.append(child)
-    
-        self.players = newPlayers
-        self.restart()
+                child = Player(430, 550)
+                child.crossOver(par1, par2)
+                newPlayers.append(child)
+        
+            self.players = newPlayers
+            self.restart()
     
     def getMaxScoreForGeneration(self):
         max_score = 0
@@ -148,7 +153,7 @@ class EggGame(object):
             # Exit Game if lives = 0
             #if self.lives == 0:
             #    self.running = False;
-            if self.lives < 0:
+            if self.lives < 0 and self.stopgen == False:
                 self.BuildNextGeneration()
             # Draw character on screen
             self.drawAllPlayers(screen)
